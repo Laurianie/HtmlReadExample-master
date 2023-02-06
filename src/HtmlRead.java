@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,10 +14,10 @@ public class HtmlRead implements ActionListener {
     private JTextArea inputURL;
     private JTextArea search;
     private JTextArea ta;
-    private JButton buttonSTART;
+    private JButton start;
 
-    private int WIDTH = 200;
-    private int HEIGHT = 200;
+    private int WIDTH = 800;
+    private int HEIGHT = 800;
 
 
 
@@ -27,17 +29,25 @@ public class HtmlRead implements ActionListener {
 
 
     private void prepareGUI() {
-        mainFrame = new JFrame("Layout Practice");
+        mainFrame = new JFrame("HTML Reader Project");
         mainFrame.setSize(WIDTH, HEIGHT);
+        mainFrame.setLayout(new GridLayout(4,1));
 
-        inputURL = new JTextArea();
-        inputURL.setBounds(50, 5, WIDTH-100, HEIGHT-50);
+        inputURL = new JTextArea("INPUT URL: ");
+        search = new JTextArea("SEARCH: ");
+        ta = new JTextArea("RESULTS:");
+        start = new JButton ("START !");
 
-        search = new JTextArea();
-        search.setBounds(80, 15, WIDTH-100, HEIGHT-50);
 
-        ta = new JTextArea();
-        ta.setBounds(500, 50, WIDTH-100, HEIGHT-50);
+        mainFrame.add(inputURL);
+        mainFrame.add(search);
+        mainFrame.add(ta);
+        mainFrame.add(start);
+
+
+        start.setActionCommand("START");
+        start.addActionListener(new ButtonClickListener());
+
 
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
@@ -69,4 +79,14 @@ public class HtmlRead implements ActionListener {
 
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    private class ButtonClickListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String command = e.getActionCommand();
+        }
+    }
 }
