@@ -17,7 +17,9 @@ public class HtmlRead implements ActionListener {
     private JLabel URL;
     private JLabel SEARCH;
     private JButton start;
+    private JButton clear;
     private JPanel panel;
+    private JScrollPane scrollBar;
 
     private int WIDTH = 1400;
     private int HEIGHT = 1200;
@@ -26,6 +28,7 @@ public class HtmlRead implements ActionListener {
 
     public static void main(String[] args) {
         HtmlRead html = new HtmlRead();
+        html.prepareGUI();
     }
 
 
@@ -35,8 +38,7 @@ public class HtmlRead implements ActionListener {
         mainFrame.setLayout(new BorderLayout());
         panel = new JPanel();
         panel.setLayout(new GridLayout(2,3));
-        mainFrame.add(panel,BorderLayout.SOUTH);
-
+        mainFrame.add(panel,BorderLayout.NORTH);
 
         inputURL = new JTextArea();
         search = new JTextArea();
@@ -48,6 +50,11 @@ public class HtmlRead implements ActionListener {
         start = new JButton ("START ");
         start.setActionCommand("START");
         start.addActionListener(new ButtonClickListener());
+        clear = new JButton ("CLEAR ");
+        clear.setActionCommand("CLEAR");
+        clear.addActionListener(new ButtonClickListener());
+        scrollBar = new JScrollPane(ta);
+        scrollBar.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 
         panel.add(SEARCH);
@@ -55,11 +62,9 @@ public class HtmlRead implements ActionListener {
         panel.add(start);
         panel.add(URL);
         panel.add(inputURL);
-        mainFrame.add(ta,BorderLayout.CENTER);
+        panel.add(clear);
 
-
-
-
+        mainFrame.add(scrollBar,BorderLayout.CENTER);
 
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
@@ -71,8 +76,6 @@ public class HtmlRead implements ActionListener {
     }
 
     public HtmlRead() {
-        prepareGUI();
-        mainFrame.setVisible(true);
     }
 
     private void HTMLRead(){
@@ -83,14 +86,43 @@ public class HtmlRead implements ActionListener {
                     new InputStreamReader(url.openStream())
             );
             String line;
-            while ( (line = reader.readLine()) != null ){
-                if (line.contains("href=\"") && line.contains("https") && line.contains(search.getText()) ) {
-                    int start = line.indexOf("href=\"") + 6;
-                    int end = line.indexOf("\"",start);
-                String Line = line.substring(start,end);
-                System.out.println(Line);
-                ta.setText(ta.getText() + "\"" + Line + "\n");
-            }}
+            while ( (line = reader.readLine()) != null ) {
+                if (line.contains("href=") && line.contains("https") && line.contains(search.getText())) {
+                    int n = -1;
+                    int start = line.indexOf("href=") + 6;
+
+                    line = line.substring(start);
+                    System.out.println(line);
+                    int end = line.indexOf("\"");
+                    int end2 = line.indexOf("\'");
+                    System.out.println("end \": " + end + " END 2 \': " + end2);
+                    if (end > n) {
+                        String newLine = line.substring(0, end);
+
+                        System.out.println(":" + newLine);
+                        ta.setText(ta.getText() + "\"" + newLine + "\n");
+                    } else if (end2 > n) {
+                        String newLine = line.substring(0, end2);
+                        System.out.println(newLine);
+                        ta.setText(ta.getText() + "\'" + newLine + "\n");
+                    }
+                    if (end != n && end2 != n) {
+                        if (end < end2) {
+                            String newLine = line.substring(0, end);
+
+                            System.out.println("::" + newLine);
+                            ta.setText(ta.getText() + "\"" + newLine + "\n");
+                        }
+                        if (end2 < end) {
+                            String newLine = line.substring(0, end2);
+                            System.out.println(":::" + newLine);
+                            ta.setText(ta.getText() + "\'" + newLine + "\n");
+                        }
+
+                    }
+                }
+
+            }
             reader.close();
         } catch(Exception ex) {
             System.out.println(ex);
@@ -105,10 +137,14 @@ public class HtmlRead implements ActionListener {
     private class ButtonClickListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
-        if (command.equals("START")){
+             if (command.equals("START")){
             start.setText("START clicked ");
             HTMLRead();
         }
+            if (command.equals("CLEAR")){
+                clear.setText("Results CLEARED");
+                ta.setText("");
+            }
         }
     }
 }
