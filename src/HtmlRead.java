@@ -20,6 +20,7 @@ public class HtmlRead implements ActionListener {
     private JButton clear;
     private JPanel panel;
     private JScrollPane scrollBar;
+    private Font font;
 
     private int WIDTH = 1400;
     private int HEIGHT = 1200;
@@ -33,19 +34,29 @@ public class HtmlRead implements ActionListener {
 
 
     private void prepareGUI() {
+        font = new Font("Normal", Font.ITALIC, 20);
+
         mainFrame = new JFrame("HTML Reader Project");
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setLayout(new BorderLayout());
         panel = new JPanel();
         panel.setLayout(new GridLayout(2,3));
+        panel.setBackground(Color.pink);
         mainFrame.add(panel,BorderLayout.NORTH);
+
 
         inputURL = new JTextArea();
         search = new JTextArea();
         ta = new JTextArea("RESULTS: " + "\n");
-        URL = new JLabel ("INPUT URL: ");
+        ta.setBackground(Color.GRAY);
+        ta.setForeground(Color.pink);
+        URL = new JLabel ("                    INPUT URL: ");
+        URL.setFont(font);
+        URL.setForeground(Color.WHITE);
         URL.setSize(2,2);
-        SEARCH = new JLabel ("SEARCH: ");
+        SEARCH = new JLabel ("                     SEARCH WORD: ");
+        SEARCH.setFont(font);
+        SEARCH.setForeground(Color.WHITE);
         SEARCH.setSize(2,2);
         start = new JButton ("START ");
         start.setActionCommand("START");
@@ -87,6 +98,7 @@ public class HtmlRead implements ActionListener {
             );
             String line;
             while ( (line = reader.readLine()) != null ) {
+                System.out.println(line);
                 if (line.contains("href=") && line.contains("https") && line.contains(search.getText())) {
                     int n = -1;
                     int start = line.indexOf("href=") + 6;
@@ -140,7 +152,7 @@ public class HtmlRead implements ActionListener {
              if (command.equals("START")){
             start.setText("START clicked ");
             HTMLRead();
-        }
+            }
             if (command.equals("CLEAR")){
                 clear.setText("Results CLEARED");
                 ta.setText("");
